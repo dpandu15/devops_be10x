@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f4">
+  <title>pennywise — money, made clear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Pennywise home">
+        <span class="brand-mark">p</span><span>pennywise<span class="brand-dot">.</span></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-link active" data-view="overview"><span class="nav-icon">◫</span> Overview</button>
+        <button class="nav-link" data-view="transactions"><span class="nav-icon">↕</span> Transactions</button>
+        <button class="nav-link" data-view="budgets"><span class="nav-icon">▤</span> Budgets</button>
+        <button class="nav-link" data-view="accounts"><span class="nav-icon">▣</span> Accounts</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="privacy-card"><span class="privacy-icon">✳</span><strong>Your money stays yours.</strong><p>Your data is saved only on this device. No bank connections, no surprises.</p></div>
+        <button class="profile-button"><span class="avatar">J</span><span class="profile-copy"><strong>Jamie Parker</strong><small>Personal space</small></span><span class="profile-more">···</span></button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumbTitle">Overview</strong></div>
+        <div class="top-actions">
+          <button class="icon-button" id="exportButton" title="Export transactions" aria-label="Export transactions">⇩</button>
+          <button class="icon-button" id="importButton" title="Import CSV" aria-label="Import CSV">⇧</button>
+          <button class="button button-dark top-add" id="addTransactionButton"><span>＋</span> Add transaction</button>
+          <input type="file" id="csvFile" accept=".csv,text/csv" hidden>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <section class="view active" id="view-overview">
+          <div class="page-heading">
+            <div><p class="eyebrow" id="todayLabel">YOUR MONEY, AT A GLANCE</p><h1>Good morning, Jamie <span class="wave">✳</span></h1><p class="subheading">Here’s how your money is looking this month.</p></div>
+            <label class="month-select"><span class="sr-only">Select month</span><span>◷</span><select id="monthSelect" aria-label="Select month"></select></label>
+          </div>
+          <div class="summary-grid">
+            <article class="summary-card balance-card"><div class="card-label">Total balance <span class="info-dot" title="Combined balance across all accounts">i</span></div><div class="summary-value" id="totalBalance">₹0</div><div class="card-foot"><span class="trend-pill">↗ <span id="accountCount">0</span> accounts</span><span class="muted">across your accounts</span></div><span class="card-decoration">₹</span></article>
+            <article class="summary-card"><div class="card-label">Income <span class="round-icon income-icon">↙</span></div><div class="summary-value" id="monthlyIncome">₹0</div><div class="card-foot"><span class="muted">Money in this month</span></div></article>
+            <article class="summary-card"><div class="card-label">Expenses <span class="round-icon expense-icon">↗</span></div><div class="summary-value" id="monthlyExpenses">₹0</div><div class="card-foot"><span class="muted">Money out this month</span></div></article>
+            <article class="summary-card savings-card"><div class="card-label">Net savings <span class="round-icon savings-icon">✳</span></div><div class="summary-value" id="netSavings">₹0</div><div class="card-foot"><span class="muted" id="savingsCaption">Income minus expenses</span></div></article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel spending-panel">
+              <div class="panel-heading"><div><h2>Spending breakdown</h2><p>See where your money is going</p></div><button class="text-button" data-navigate="transactions">View all <span>→</span></button></div>
+              <div class="spending-content"><div class="donut-wrap"><div class="donut-chart" id="donutChart"><div class="donut-center"><strong id="donutTotal">₹0</strong><span>spent</span></div></div></div><div class="category-legend" id="categoryLegend"></div></div>
+            </article>
+            <article class="panel budget-panel">
+              <div class="panel-heading"><div><h2>Monthly budget</h2><p id="budgetSubtitle">Your monthly spending plan</p></div><button class="text-button" data-navigate="budgets">See all <span>→</span></button></div>
+              <div class="budget-overall"><div class="budget-line"><span>Overall budget</span><strong id="overallBudgetAmount">₹0 <small>/ ₹0</small></strong></div><div class="progress-track"><div id="overallProgress" class="progress-fill"></div></div><div class="budget-line budget-foot"><span id="overallBudgetStatus">Set a budget to get started</span><span id="overallBudgetPercent">0%</span></div></div>
+              <div class="budget-categories" id="budgetPreview"></div>
+            </article>
+          </div>
+
+          <article class="panel transactions-panel">
+            <div class="panel-heading"><div><h2>Recent transactions</h2><p>Your latest money moves</p></div><button class="text-button" data-navigate="transactions">All transactions <span>→</span></button></div>
+            <div class="table-wrap"><table><thead><tr><th>TRANSACTION</th><th>CATEGORY</th><th>DATE</th><th>ACCOUNT</th><th class="align-right">AMOUNT</th></tr></thead><tbody id="recentTransactions"></tbody></table></div>
+            <div class="empty-state hidden" id="recentEmpty">No transactions yet. Add one to see it here.</div>
+          </article>
+        </section>
+
+        <section class="view" id="view-transactions">
+          <div class="page-heading compact-heading"><div><p class="eyebrow">YOUR MONEY, YOUR WAY</p><h1>Transactions</h1><p class="subheading">Every little thing adds up. Keep track of it all.</p></div><button class="button button-dark" data-open-add><span>＋</span> Add transaction</button></div>
+          <article class="panel full-table-panel">
+            <div class="filter-row">
+              <label class="search-box"><span>⌕</span><input id="transactionSearch" type="search" placeholder="Search transactions..." aria-label="Search transactions"></label>
+              <select id="typeFilter" aria-label="Filter by type"><option value="">All types</option><option value="expense">Expenses</option><option value="income">Income</option></select>
+              <select id="categoryFilter" aria-label="Filter by category"><option value="">All categories</option></select>
+              <select id="accountFilter" aria-label="Filter by account"><option value="">All accounts</option></select>
+            </div>
+            <div class="table-wrap"><table><thead><tr><th>TRANSACTION</th><th>CATEGORY</th><th>DATE</th><th>ACCOUNT</th><th class="align-right">AMOUNT</th><th></th></tr></thead><tbody id="allTransactions"></tbody></table></div>
+            <div class="empty-state hidden" id="transactionsEmpty">No transactions match your search.</div>
+          </article>
+        </section>
+
+        <section class="view" id="view-budgets">
+          <div class="page-heading compact-heading"><div><p class="eyebrow">SPEND WITH INTENTION</p><h1>Budgets</h1><p class="subheading">A little plan goes a long way.</p></div><button class="button button-dark" id="editBudgetButton">✎ Edit budgets</button></div>
+          <div class="budget-summary-row">
+            <article class="summary-card"><div class="card-label">Monthly limit</div><div class="summary-value" id="budgetPageLimit">₹0</div><div class="card-foot"><span class="muted">Across all categories</span></div></article>
+            <article class="summary-card"><div class="card-label">Spent so far</div><div class="summary-value" id="budgetPageSpent">₹0</div><div class="card-foot"><span class="muted">This month</span></div></article>
+            <article class="summary-card"><div class="card-label">Still available</div><div class="summary-value" id="budgetPageRemaining">₹0</div><div class="card-foot"><span class="muted" id="budgetPageCaption">Keep it up</span></div></article>
+          </div>
+          <article class="panel budget-list-panel"><div class="panel-heading"><div><h2>Category budgets</h2><p>Progress resets at the start of each month</p></div></div><div id="budgetList" class="budget-list"></div></article>
+        </section>
+
+        <section class="view" id="view-accounts">
+          <div class="page-heading compact-heading"><div><p class="eyebrow">ALL IN ONE PLACE</p><h1>Your accounts</h1><p class="subheading">A clear picture of where your money lives.</p></div><button class="button button-dark" id="addAccountButton"><span>＋</span> Add account</button></div>
+          <div class="account-total panel"><div><span class="card-label">Total across accounts</span><strong id="accountTotal">₹0</strong></div><span class="account-total-icon">▣</span></div>
+          <div class="accounts-grid" id="accountsGrid"></div>
+        </section>
+      </div>
+      <footer class="page-footer"><span>Made for peace of mind <span class="footer-spark">✳</span></span><span>Private by design · Data stays on this device</span></footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="transactionModal" role="dialog" aria-modal="true" aria-labelledby="transactionModalTitle">
+    <form class="modal" id="transactionForm">
+      <div class="modal-heading"><div><p class="eyebrow">A QUICK LITTLE UPDATE</p><h2 id="transactionModalTitle">Add transaction</h2></div><button type="button" class="modal-close" data-close-modal aria-label="Close">×</button></div>
+      <input type="hidden" id="transactionId">
+      <div class="type-toggle"><button type="button" class="type-option selected" data-type="expense">↗ Expense</button><button type="button" class="type-option" data-type="income">↙ Income</button></div>
+      <label class="field-label">Amount<div class="amount-input"><span>₹</span><input id="transactionAmount" type="number" min="0.01" step="0.01" placeholder="0.00" required></div></label>
+      <div class="form-grid"><label class="field-label">Category<select id="transactionCategory" required></select></label><label class="field-label">Account<select id="transactionAccount" required></select></label></div>
+      <div class="form-grid"><label class="field-label">Date<input id="transactionDate" type="date" required></label><label class="field-label">Note<input id="transactionNote" type="text" maxlength="120" placeholder="What was it for?"></label></div>
+      <div class="modal-actions"><button type="button" class="button button-light" data-close-modal>Cancel</button><button type="submit" class="button button-dark" id="saveTransactionButton">Save transaction <span>→</span></button></div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop hidden" id="budgetModal" role="dialog" aria-modal="true" aria-labelledby="budgetModalTitle">
+    <form class="modal" id="budgetForm"><div class="modal-heading"><div><p class="eyebrow">A PLAN THAT FEELS RIGHT</p><h2 id="budgetModalTitle">Set your budgets</h2></div><button type="button" class="modal-close" data-close-modal aria-label="Close">×</button></div>
+      <label class="field-label">Overall monthly budget<div class="amount-input"><span>₹</span><input id="overallBudgetInput" type="number" min="0" step="100" placeholder="e.g. 50,000"></div></label>
+      <div class="budget-input-grid" id="budgetInputs"></div><div class="modal-actions"><button type="button" class="button button-light" data-close-modal>Cancel</button><button type="submit" class="button button-dark">Save budgets <span>→</span></button></div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop hidden" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">
+    <form class="modal" id="accountForm"><div class="modal-heading"><div><p class="eyebrow">YOUR MONEY, ORGANIZED</p><h2 id="accountModalTitle">Add an account</h2></div><button type="button" class="modal-close" data-close-modal aria-label="Close">×</button></div>
+      <label class="field-label">Account name<input id="accountName" type="text" maxlength="40" placeholder="e.g. Everyday account" required></label>
+      <div class="form-grid"><label class="field-label">Account type<select id="accountType"><option>Bank account</option><option>Cash</option><option>Credit card</option><option>Wallet</option></select></label><label class="field-label">Opening balance<div class="amount-input"><span>₹</span><input id="openingBalance" type="number" step="0.01" placeholder="0.00" value="0"></div></label></div>
+      <div class="modal-actions"><button type="button" class="button button-light" data-close-modal>Cancel</button><button type="submit" class="button button-dark">Add account <span>→</span></button></div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop hidden" id="importModal" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
+    <form class="modal import-modal" id="importForm"><div class="modal-heading"><div><p class="eyebrow">BRING IT ALL TOGETHER</p><h2 id="importModalTitle">Import transactions</h2><p class="modal-description">Match your CSV columns, review a preview, then import.</p></div><button type="button" class="modal-close" data-close-modal aria-label="Close">×</button></div>
+      <div id="importStep"><label class="field-label">CSV file<input id="importFileInput" type="file" accept=".csv,text/csv" required></label><div class="mapping-grid"><label class="field-label">Date column<select id="mapDate"></select></label><label class="field-label">Amount column<select id="mapAmount"></select></label><label class="field-label">Type column (optional)<select id="mapType"></select></label><label class="field-label">Category column (optional)<select id="mapCategory"></select></label><label class="field-label">Note column (optional)<select id="mapNote"></select></label></div><button type="button" class="button button-light" id="previewImportButton">Preview CSV</button><div id="importPreview" class="import-preview hidden"></div></div>
+      <div class="modal-actions"><button type="button" class="button button-light" data-close-modal>Cancel</button><button type="submit" class="button button-dark" id="confirmImportButton" disabled>Import transactions <span>→</span></button></div>
+    </form>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
